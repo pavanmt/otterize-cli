@@ -1,4 +1,4 @@
-module github.com/otterize/otterize-cli
+module github.com/pavanmt/otterize-cli
 
 go 1.21
 
