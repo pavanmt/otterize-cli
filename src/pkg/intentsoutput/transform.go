@@ -2,6 +2,7 @@ package intentsoutput
 
 import (
 	"fmt"
+	"cmp"
 	"github.com/amit7itz/goset"
 	"github.com/otterize/intents-operator/src/operator/api/v1alpha3"
 	"github.com/otterize/otterize-cli/src/pkg/consts"
