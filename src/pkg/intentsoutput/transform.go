@@ -61,7 +61,7 @@ func removeUntypedIntentsIfTypedIntentExistsForServer(intents map[ServiceKey]v1a
 	}
 }
 
-func sortIntents(intents []v1alpha3.ClientIntents) {
+/*func sortIntents(intents []v1alpha3.ClientIntents) {
 	slices.SortFunc(intents, func(intenta, intentb v1alpha3.ClientIntents) bool {
 		namea, nameb := intenta.Name, intentb.Name
 		namespacea, namespaceb := intenta.Namespace, intentb.Namespace
@@ -85,6 +85,37 @@ func sortIntents(intents []v1alpha3.ClientIntents) {
 			return namespacea < namespaceb
 		})
 	}
+}*/
+
+func sortIntents(intents []v1alpha3.ClientIntents) {
+	slices.SortFunc(intents, func(intenta, intentb v1alpha3.ClientIntents) int {
+			namea, nameb := intenta.Name, intentb.Name
+			namespacea, namespaceb := intenta.Namespace, intentb.Namespace
+
+			if namea != nameb {
+				return cmp.Compare(namea, nameb)
+				//return namea.CompareTo(nameb)
+				//return namea < nameb
+			}
+
+			return cmp.Compare(namespacea, namespaceb)
+			//return namespacea < namespaceb
+		})
+
+		for _, clientIntents := range intents {
+			slices.SortFunc(clientIntents.Spec.Calls, func(intenta, intentb v1alpha3.Intent) int {
+				namea, nameb := intenta.GetTargetServerName(), intentb.GetTargetServerName()
+				namespacea, namespaceb := intenta.GetTargetServerNamespace(clientIntents.Namespace), intentb.GetTargetServerNamespace(clientIntents.Namespace)
+
+				if namea != nameb {
+					return cmp.Compare(namea, nameb)
+					//return namea < nameb
+				}
+
+				return cmp.Compare(namespacea, namespaceb)
+				//return namespacea < namespaceb
+			})
+		}
 }
 
 func MapperIntentsToAPIIntents(mapperIntents []mapperclient.IntentsIntentsIntent, distinctByLabelKey string, exportKubernetesService bool) []v1alpha3.ClientIntents {
